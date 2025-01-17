@@ -33,7 +33,7 @@ class Perceptron:
         return (-(a/b) * x) - (c / b)
 
     # This method creates a graph with points and the decision boundary.
-    def graph(self, points):
+    def graph(self, points, name_string):
 
         xList = np.linspace(-6, 10, 20)
 
@@ -55,13 +55,13 @@ class Perceptron:
 
         plt.plot(xList, yList)
 
-        plt.savefig("Perception_Graph.png")
+        plt.savefig(name_string)
 
 
     
     # This method prints the cost of one point in the graph.
     def cost_function(self, x1, x2, y):
-        return -((y * math.log(self.predict(x1, x2))) + ((1 - y) * math.log(1 - self.predict(x1, x2))))
+        return -((y * (math.log(self.predict(x1, x2)) + epsilon)) + ((1 - y) * (math.log(1 - self.predict(x1, x2) + epsilon))))
     
 
     # This method prints the cost of each individual point in an array of points.
@@ -69,7 +69,7 @@ class Perceptron:
         for point in points:
             print()
             cost = (-((point[2] * math.log(self.predict(point[0], point[1]))) + 
-                     ((1 - point[2]) * math.log(1 - self.predict(point[0], point[1])))))
+                     ((1 - point[2]) * (math.log(1 - self.predict(point[0], point[1])) + epsilon))))
             
             print(f"Cost for ({point[0]}, {point[1]}): {cost}")
 
@@ -97,6 +97,9 @@ class Perceptron:
                 self.bias = new_w
 
 
+# Epsilon global variable
+epsilon = (1 * 10 ** -15)
+
 # Create perceptron object.
 sample_perceptron = Perceptron(random.random(), random.random(), random.random())
 print()
@@ -113,32 +116,12 @@ test_points = [[6, 1, 0], [7, 3, 0], [8, 2, 0], [9, 0, 0], [8, 4, 1], [8, 6, 1],
 test_points2 = [[6, 1, 1, 0], [7, 3, 1, 0], [8, 2, 1, 0], [9, 0, 1, 0], [8, 4, 1, 1], [8, 6, 1, 1],
                 [9, 2, 1, 1], [9, 5, 1, 1]]
 
-count = 0
 
-while True:
-    for point in test_points:
-        if (sample_perceptron.predict(point[0], point[1]) > 1.0) and (point[2] == 0):
-            sample_perceptron.weight1 = random.random()
-            sample_perceptron.weight2 = random.random()
-            sample_perceptron.bias = random.random()
-            count += 1
-        
-        if (sample_perceptron.predict(point[0], point[1]) < 0.0) and (point[2] == 1):
-            sample_perceptron.weight1 = random.random()
-            sample_perceptron.weight2 = random.random()
-            sample_perceptron.bias = random.random()
-            count += 1
-
-    if count == 0:
-        for point in test_points:
-            print(sample_perceptron.predict(point[0], point[1]))
-            print()
-        break
 
 # Test cost_function function
 # Test successful
-print(sample_perceptron.cost_function(0, 1, 1))
-print()
+# print(sample_perceptron.cost_function(0, 1, 1))
+# print()
 
 # Test multi_cost_function function
 # Test successful
@@ -148,12 +131,16 @@ print()
 
 # Test graph function
 # Test successful
-sample_perceptron.graph(test_points)
+sample_perceptron.graph(test_points, "Original_Perceptron_Graph.png")
 print()
 
 # Test backprop
 # Test successful
-sample_perceptron.learning(test_points2)
+for i in range(100):
+    sample_perceptron.learning(test_points2)
+    sample_perceptron.graph(test_points, "Perceptron_Graph" + str(i) + ".png")
+
+
 
 
 # Print new Perceptron attributes.
