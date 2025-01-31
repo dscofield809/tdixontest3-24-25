@@ -119,12 +119,21 @@ class Perceptron:
             else:
                 self.bias = new_w
 
+    '''
+    This function uses the time based learning rate formula to improve
+    the Perceptron object's learning rate at a given point.
+    '''
+    def learning_decay(self, step, last_learning_rate,):
+        return last_learning_rate / (1 + (5 * step))
+
 
 # Epsilon global variable
 epsilon = (1 * 10 ** -15)
 
 # Learning rate global variable
-learning_rate = 0.5
+# learning_rate = 0.5
+
+initial_learning_rate = 1
 
 # Create perceptron object.
 sample_perceptron = Perceptron(random.random(), random.random(), random.random())
@@ -162,10 +171,21 @@ print()
 
 list_of_file_names =[]
 
+'''
+Global parameter for learning_decay function. Keep track of the amount
+of times the learning rate changes.
+'''
+learning_step = 0
+
+
+
+
 # Test backprop
 # Test successful
 for i in range(1000):
     sample_perceptron.learning(test_points2)
+    learning_step += 1
+    sample_perceptron.learning_decay(learning_step, sample_perceptron.learning(test_points2))
     sample_perceptron.graph(test_points, "Perceptron_Graph" + str(i) + ".png")
     list_of_file_names.append(f"Perceptron_Graph" + str(i) + ".png")
 
