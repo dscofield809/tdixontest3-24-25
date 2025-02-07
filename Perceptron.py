@@ -8,10 +8,11 @@ import imageio.v2 as imageio
 class Perceptron:
 
     # This constructor enables the creation of a Perceptron object with 2 weights and a bias
-    def __init__(self, weight1, weight2, bias):
+    def __init__(self, weight1, weight2, bias, learning_rate):
         self.weight1 = weight1
         self.weight2 = weight2
         self.bias = bias
+        self.learning_rate = learning_rate
     
     '''
     This method implements the sigmoid function, which is used by the cost_function and 
@@ -66,8 +67,8 @@ class Perceptron:
         y_points = [p[1] for p in points]
         labels = [p[2] for p in points]
 
-        print(x_points)
-        print(y_points)
+        # print(x_points)
+        # print(y_points)
 
         plt.axis([x_axis_min - 1, x_axis_max + 1, y_axis_min - 1, y_axis_max + 1])
 
@@ -105,10 +106,10 @@ class Perceptron:
         for i in range(len(list_of_weights)):
             change_sum = 0
             for p in list_of_points:
-                if (list_of_points.index(p) == 0):
-                    print(f"change summation for {i}")
-                change_sum += ((self.predict(p[0], p[1]) - p[3]) * (p[i])) * learning_rate
-                print(change_sum)
+                # if (list_of_points.index(p) == 0):
+                #     print(f"change summation for {i}")
+                change_sum += ((self.predict(p[0], p[1]) - p[3]) * (p[i])) * self.learning_rate
+                # print(change_sum)
                 if (list_of_points.index(p) == len(list_of_points) - 1):
                     print()
             new_w = list_of_weights[i] - (change_sum / len(list_of_points))
@@ -119,12 +120,6 @@ class Perceptron:
             else:
                 self.bias = new_w
 
-    '''
-    This function uses the time based learning rate formula to improve
-    the Perceptron object's learning rate at a given point.
-    '''
-    def learning_decay(self, step, last_learning_rate,):
-        return last_learning_rate / (1 + (5 * step))
 
 
 # Epsilon global variable
@@ -135,8 +130,14 @@ epsilon = (1 * 10 ** -15)
 
 initial_learning_rate = 1
 
+# Global decay parameter variable
+decay_parameter = 0.001
+
+# Global interations variable.
+iterations = 100
+
 # Create perceptron object.
-sample_perceptron = Perceptron(random.random(), random.random(), random.random())
+sample_perceptron = Perceptron(random.random(), random.random(), random.random(), 1)
 print()
 
 print(sample_perceptron.weight1)
@@ -182,10 +183,12 @@ learning_step = 0
 
 # Test backprop
 # Test successful
-for i in range(1000):
+for i in range(iterations):
+    print(f"Iteration: {i}")
+    print(f"Learning Rate: {sample_perceptron.learning_rate}")
     sample_perceptron.learning(test_points2)
     learning_step += 1
-    sample_perceptron.learning_decay(learning_step, sample_perceptron.learning(test_points2))
+    sample_perceptron.learning_rate = ((sample_perceptron.learning_rate) / (1 + decay_parameter*i))
     sample_perceptron.graph(test_points, "Perceptron_Graph" + str(i) + ".png")
     list_of_file_names.append(f"Perceptron_Graph" + str(i) + ".png")
 
