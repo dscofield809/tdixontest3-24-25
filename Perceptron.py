@@ -35,7 +35,7 @@ class Perceptron:
         return (-(a/b) * x) - (c / b)
 
     # This method creates a graph with points and the decision boundary.
-    def graph(self, points, name_string):
+    def graph(self, points, name_string, iteration):
 
         '''
         Lists of x and y points respectively. Will help in making the window in the 
@@ -76,6 +76,7 @@ class Perceptron:
 
         plt.xlabel("x1")
         plt.ylabel("x2")
+        plt.title(f"Perceptron_Graph" + " " + str(iteration))
 
         plt.plot(xList, yList)
 
@@ -131,7 +132,7 @@ epsilon = (1 * 10 ** -15)
 initial_learning_rate = 1
 
 # Global decay parameter variable
-decay_parameter = 0.001
+decay_parameter = 0.000001
 
 # Global interations variable.
 iterations = 100
@@ -167,7 +168,7 @@ print()
 
 # Test graph function
 # Test successful
-sample_perceptron.graph(test_points, "Original_Perceptron_Graph.png")
+sample_perceptron.graph(test_points, "Original_Perceptron_Graph.png", 0)
 print()
 
 list_of_file_names =[]
@@ -189,7 +190,7 @@ for i in range(iterations):
     sample_perceptron.learning(test_points2)
     learning_step += 1
     sample_perceptron.learning_rate = ((sample_perceptron.learning_rate) / (1 + decay_parameter*i))
-    sample_perceptron.graph(test_points, "Perceptron_Graph" + str(i) + ".png")
+    sample_perceptron.graph(test_points, "Perceptron_Graph" + str(i) + ".png", i)
     list_of_file_names.append(f"Perceptron_Graph" + str(i) + ".png")
 
 
