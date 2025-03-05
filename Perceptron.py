@@ -135,7 +135,7 @@ initial_learning_rate = 1
 decay_parameter = 0.00001
 
 # Global interations variable.
-iterations = 500
+iterations = 1000
 
 # Create perceptron object.
 sample_perceptron = Perceptron(random.random(), random.random(), random.random(), 1)
